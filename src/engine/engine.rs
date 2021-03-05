@@ -78,9 +78,9 @@ impl Engine {
         &self._pm._plugins
     }
 
-    pub fn find(&self, uid: &str) -> Result<&Plugin, EngineError> {
-        for p in self._pm.all() {
-            let p: &Plugin = p;
+    pub fn find(&mut self, uid: &str) -> Result<&mut Plugin, EngineError> {
+        for p in self._pm._plugins.iter_mut() {
+            let p: &mut Plugin = p;
             if p.guid.eq(uid) {
                 return Result::Ok(p);
             }

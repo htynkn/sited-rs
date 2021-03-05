@@ -2,6 +2,9 @@
 #[macro_use]
 extern crate hamcrest;
 
+#[macro_use]
+extern crate lazy_static;
+
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 

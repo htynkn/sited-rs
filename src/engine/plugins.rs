@@ -1,5 +1,7 @@
 use core::fmt;
+use std::borrow::BorrowMut;
 use std::fmt::Formatter;
+use std::sync::Mutex;
 
 use log::{debug, info};
 
@@ -19,7 +21,7 @@ pub struct Plugin {
 }
 
 impl Plugin {
-    pub fn getHots(&self) -> Vec<Book> {
+    pub fn getHots(&mut self) -> Vec<Book> {
         let hots_config = &self.hots;
 
         let mut response_content = String::new();
@@ -29,6 +31,14 @@ impl Plugin {
                 //default is get method
                 response_content = reqwest::blocking::get(&hots_config.url).unwrap().text().unwrap();
             }
+        }
+
+        for c in &self.codes {
+            let c: &ScriptCode = c;
+
+            let script_context = reqwest::blocking::get(&c.url).unwrap().text().unwrap();
+
+            &self.js.addScript(&script_context);
         }
 
         debug!("get response from {} as {}", hots_config.url, response_content);
