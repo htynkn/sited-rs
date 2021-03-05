@@ -1,0 +1,20 @@
+[package]
+name = "core"
+version = "0.1.0"
+authors = ["Huang Yunkun <htynkn@gmail.com>"]
+edition = "2018"
+
+[lib]
+name = "core"
+crate-type = ["staticlib", "cdylib", "lib"]
+
+[dependencies]
+xml-rs = "0.8"
+log = "0.4.14"
+log4rs = "1"
+reqwest = { version = "0.11", features = ["blocking", "rustls-tls"], default-features = false }
+duktape-rs = "0.0.4"
+
+[dev-dependencies]
+hamcrest = "*"
+tempdir = "*"

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sited ver="15" debug="0" engine="34" schema="1" sds="https://sited.fireflies-online.club/update?url=">
+    <meta guid="bc9e3e3b-c6e8-4d84-b976-81cce04e4a61">
+        <title>日本漫畫mangabz</title>
+        <intro>mangabz是全網資源最全的在線漫畫、日本漫畫閱讀平臺。擁有時下最熱門的日漫作品：鬼滅之刃、一拳超人178、海賊王991、火影忍者、死神等。超快的更新速度，第一時間為你奉上極致的閱讀體驗。 </intro>
+        <author>htynkn</author>
+        <url>http://www.mangabz.com/</url>
+        <encode>utf-8</encode>
+        <expr>mangabz\.com</expr>
+        <about title="反馈">
+            <item txt="当前版本：[15]"/>
+            <item/>
+            <item txt="萤火虫Sited插件中心"/>
+            <item url="https://sited.fireflies-online.club/"/>
+        </about>
+    </meta>
+    <main dtype="1" durl="https://mangabz.com" trace="https://sited.fireflies-online.club/trace?pluginName=日本漫畫mangabz">
+        <home>
+            <hots cache="1d" title="首页" method="get" parse="hots_parse" url="http://www.mangabz.com/" header="cookie;referer"/>
+            <updates cache="1d" showImg="1" title="更新" method="get" parse="tag_parse" url="https://www.mangabz.com/manga-list-0-0-2/"/>
+            <tags title="分类">
+              <item title="热血" url="https://www.mangabz.com/manga-list-31-0-2-p@page"/>
+              <item title="恋爱" url="https://www.mangabz.com/manga-list-26-0-2-p@page"/>
+              <item title="校园" url="https://www.mangabz.com/manga-list-1-0-2-p@page"/>
+              <item title="冒险" url="https://www.mangabz.com/manga-list-2-0-2-p@page"/>
+              <item title="科幻" url="https://www.mangabz.com/manga-list-25-0-2-p@page"/>
+              <item title="魔法" url="https://www.mangabz.com/manga-list-15-0-2-p@page"/>
+              <item title="运动" url="https://www.mangabz.com/manga-list-34-0-2-p@page"/>
+              <item title="生活" url="https://www.mangabz.com/manga-list-11-0-2-p@page"/>
+              <item title="悬疑" url="https://www.mangabz.com/manga-list-17-0-2-p@page"/>
+            </tags>
+        </home>
+        <search method="get" parse="search_parse" url="https://mangabz.com/search?title=@key"/>
+        <book cache="1d" method="get" parse="book_parse" header="cookie;referer"/>
+        <section cache="1d" method="get" parse="section_parse" parseUrl="section_parse_url" header="cookie;referer"/>
+        <tag cache="1d" method="get" parse="tag_parse" header="cookie;referer"/>
+    </main>
+
+    <script>
+        <require>
+            <item url="http://sited.noear.org/addin/js/cheerio.js" lib="cheerio"/>
+        </require>
+        <code>
+            <![CDATA[
+                function search_parse(t,e){var a=cheerio.load(e),i=[];return a("ul.mh-list li").each(function(){var t=a(this),e={};e.name=t.find("h2.title").text().trim(),e.url=furl(t.find("h2.title a").attr("href")),e.logo=t.find("img.mh-cover").attr("src"),i.push(e)}),JSON.stringify(i)}function hots_parse(t,e){var a=cheerio.load(e),i=[];return a("div.index-manga-list div.index-manga-item").each(function(){var t=a(this),e={};e.name=t.find("a").text().trim(),e.url=furl(t.children("a").attr("href")),e.logo=t.find("img").attr("src"),i.push(e)}),JSON.stringify(i)}function book_parse_url(t,e){var a=cheerio.load(e),r=[];r.push(t);var n=-1;for(a("div.pagenavi span").each(function(){var t=a(this);parseInt(t.text())>n&&(n=parseInt(t.text()))}),i=2;i<=n;i++)r.push(t+"/"+i);return(r=unique(r)).join(";")}function tag_parse(t,e){var a=cheerio.load(e),i=[];return a("div.manga-i-list div.manga-i-list-item").each(function(){var t=a(this),e={};e.name=t.children("p.manga-i-list-title").text().trim(),e.url=furl(t.children("a").attr("href")),e.logo=t.find("img.manga-i-cover").attr("src"),i.push(e)}),JSON.stringify(i)}function book_parse(t,e){var a=cheerio.load(e),i={};i.name=a("p.detail-info-title").text().trim();try{i.intro=a("p.detail-info-content").text().trim().replace("[-折疊]","");var r=!1;a("p.detail-info-tip span").each(function(){if(!r){var t=a(this);i.author=t.text().trim().replace("作者：",""),r=!0}});var n=a("div.detail-list-form-title").text();if(-1<n.indexOf("分钟前")||-1<n.indexOf("分鐘前")||-1<n.indexOf("今天"))i.updateTime=(new Date).toISOString().slice(0,10);else if(n.indexOf("年")<=-1&&-1<n.indexOf("月")){var c=/(\S+)月(\S+)(号|號)/g;match=c.exec(n),match&&(i.updateTime=(new Date).toISOString().slice(0,4)+"-"+match[1]+"-"+match[2])}else{c=/(\S+)年(\S+)月(\S+)(号|號)/g;if(match=c.exec(n),match)i.updateTime=match[1]+"-"+match[2]+"-"+match[3];else{c=/(\S+)-(\S+)-(\S+)/g;match=c.exec(n),match&&(i.updateTime=match[1]+"-"+match[2]+"-"+match[3])}}}catch(t){}var h=[];return a("div.container a.detail-list-form-item").each(function(){var t=a(this);h.push({name:t.text().trim().replace(/\s+/g," "),url:furl(t.attr("href"))})}),i.sections=h,JSON.stringify(i)}function section_parse_url(t,e){var a=[];match=/var MANGABZ_CID\s?=\s?(\d+);/g.exec(e);var i=match[1];match=/var COMIC_MID\s?=\s?(\d+);/g.exec(e);var r=match[1];match=/var MANGABZ_VIEWSIGN_DT\s?=\s?"([\S ]*)";/g.exec(e);var n=match[1];match=/var MANGABZ_VIEWSIGN\s?=\s?"(\S+)";/g.exec(e);var c=match[1];match=/var MANGABZ_CURL\s?=\s?"(\S+)";/g.exec(e);var h=match[1];match=/var MANGABZ_IMAGE_COUNT\s?=\s?(\d+);/g.exec(e);for(var s=match[1],m=1;m<=s;m++)a.push("https://mangabz.com/"+h+"/chapterimage.ashx?cid="+i+"&page="+m+"&key=&_cid="+i+"&_mid="+r+"&_dt="+n+"&_sign="+c);return a.join(";")}function section_parse(url,html){var list=[],es=html.substring(4,html.length-1);return list.push(eval(eval(es))[0]),JSON.stringify(list)}function build_url(t,e){return 1==e&&(t=t.replace("page/@page","")),t}function unique(t){for(var e={},a=[],i=0,r=t.length;i<r;++i)e.hasOwnProperty(t[i])||(a.push(t[i]),e[t[i]]=1);return a}function furl(t){return"https://mangabz.com"+t}
+            ]]>
+        </code>
+    </script>
+</sited>
